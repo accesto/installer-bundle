@@ -1,0 +1,5 @@
+services:
+    accesto.installer.actions:
+        class: Accesto\InstallerBundle\Service\InstallerActionChain
+    accesto.installer.requirements:
+        class: Accesto\InstallerBundle\Service\InstallerRequirementChain

@@ -72,42 +72,29 @@ class InstallCommand extends ContainerAwareCommand
 
     protected function setupStep(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<info>Setting up database.</info>');
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $output->writeln('<info>Running installer actions</info>');
 
-        $this
-            ->runCommand('doctrine:database:create', $input, $output)
-            ->runCommand('doctrine:schema:create', $input, $output)
-            ->runCommand('assetic:dump', $input, $output)
-        ;
-
-        if ($dialog->askConfirmation($output, '<question>Load fixtures (Y/N)?</question>', false)) {
-            $this->runCommand('doctrine:fixtures:load', $input, $output);
+        foreach ($this->getContainer()->get('accesto.installer.actions') as $collection) {
+            $output->writeln(sprintf('<comment>%s</comment>', $collection->getLabel()));
+            foreach ($collection as $action) {
+                $output->write($action->getLabel());
+                $output->write($action->getDescription());
+                if ($action->run($this, $input, $output)) {
+                    $output->writeln(' <info>OK</info>');
+                } else {
+                    $output->writeln(' <error>ERROR</error>');
+                    $output->writeln(sprintf('<comment>%s</comment>', $action->getError()));
+                }
+            }
         }
 
         $output->writeln('');
-//        $output->writeln('<info>Administration setup.</info>');
-//
-//        $userClass = $this->getContainer()->getParameter('sylius.model.user.class');
-//        $user = new $userClass;
-//
-//        $user->setUsername($dialog->ask($output, '<question>Username:</question>'));
-//        $user->setPlainPassword($dialog->ask($output, '<question>Password:</question>'));
-//        $user->setEmail($dialog->ask($output, '<question>Email:</question>'));
-//        $user->setEnabled(true);
-//        $user->setRoles(array('ROLE_SYLIUS_ADMIN'));
-//
-//        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-//        $em->persist($user);
-//        $em->flush();
-//
-//        $output->writeln('');
 
         return $this;
     }
 
-    private function runCommand($command, InputInterface $input, OutputInterface $output)
+    public function runCommand($command, InputInterface $input, OutputInterface $output)
     {
         $this
             ->getApplication()
