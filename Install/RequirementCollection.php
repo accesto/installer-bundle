@@ -18,6 +18,7 @@ class RequirementCollection implements IteratorAggregate
 
     protected $label;
     protected $requirements = array();
+    protected $priority = 0;
 
     public function __construct($label)
     {
@@ -34,11 +35,44 @@ class RequirementCollection implements IteratorAggregate
         return new ArrayIterator($this->requirements);
     }
 
-    public function add(RequirementInterface $requirement)
+    public function addRequirement(RequirementInterface $requirement)
     {
         $this->requirements[] = $requirement;
 
         return $this;
     }
+
+    /**
+     * @param array $requirements
+     */
+    public function setRequirements($requirements)
+    {
+        $this->requirements = $requirements;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequirements()
+    {
+        return $this->requirements;
+    }
+
+    /**
+     * @param int $priority
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
 
 }

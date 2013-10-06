@@ -22,4 +22,6 @@ interface ActionInterface
     public function getLabel();
 
     public function getDescription();
+
+    public function getError();
 }

@@ -9,6 +9,10 @@
 
 namespace Accesto\InstallerBundle\Install;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 
 class Action implements ActionInterface
 {
@@ -42,7 +46,7 @@ class Action implements ActionInterface
         return $this->description;
     }
 
-    public function run()
+    public function run(ContainerAwareCommand $command, InputInterface $input, OutputInterface $output)
     {
         return call_user_func($this->run);
     }
